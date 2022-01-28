@@ -18,6 +18,7 @@ async function run() {
         const database = client.db('travel_life');
         const blogsCollection = database.collection('blogs');
         const usersCollection = database.collection('users');
+        const commentsCollection = database.collection('comments');
 
         //GET Products API
         app.post('/blogs', async (req, res) => {
@@ -26,8 +27,6 @@ async function run() {
             console.log(data);
             res.json(result)
         })
-
-        
 
         app.post('/users', async (req, res) => {
             const data = req.body
@@ -141,6 +140,18 @@ async function run() {
             res.json(result)
         });
 
+        app.post('/blog/comments', async(req,res) => {
+            const data = req.body
+            console.log(data);
+            const result = await commentsCollection.insertOne(data)
+            res.json(result)
+        } )
+
+        app.get('/blog/comments', async (req, res) => {
+            const result = await commentsCollection.find({}).toArray()
+            res.send(result)
+        })
+        
         app.put('/blogs/update/:id', async (req, res) => {
             const id = req.params.id;
             const data = req.body;
