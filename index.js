@@ -147,6 +147,18 @@ async function run() {
             res.json(result)
         } )
 
+        app.put('/blog/comments/:id' , async (req, res) => {
+            const id = req.params.id
+            const comment = req.body
+            const query = {_id : ObjectId(id)}
+            const updateComment = {
+                $set : comment
+            }
+            console.log(comment, query, updateComment);
+            const result = await commentsCollection.updateOne(query, updateComment)
+            res.json(result)
+        })
+
         app.get('/blog/comments', async (req, res) => {
             const result = await commentsCollection.find({}).toArray()
             res.send(result)
@@ -170,6 +182,19 @@ async function run() {
             const result = await commentsCollection.deleteOne(query)
             res.json(result)
         })
+
+        app.put('/blog/likes/:id', async (req, res) => {
+            const id = req.params.id;
+            const data = req.body;
+            const filter = { _id: ObjectId(id) };
+            const likes = { likes: data?.likes,
+            likers : data?.likers }
+            console.log(likes);
+            const updateDoc = { $set: likes };
+
+            const result = await blogsCollection.updateOne(filter, updateDoc);
+            res.send(result);
+        });
 
     }
     finally {
